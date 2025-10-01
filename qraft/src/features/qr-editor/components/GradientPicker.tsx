@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { ColorPicker } from './ColorPicker';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { Card } from '@/components/ui/card';
 
 interface GradientPickerProps {
   label: string;
@@ -31,19 +34,17 @@ export function GradientPicker({
   onRotationChange,
 }: GradientPickerProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg">
+    <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          {label}
-        </label>
+        <Label>{label}</Label>
         <button
           onClick={() => onToggle(!enabled)}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            enabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+            enabled ? 'bg-primary' : 'bg-muted'
           }`}
         >
           <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            className={`inline-block h-4 w-4 transform rounded-full bg-background transition-transform ${
               enabled ? 'translate-x-6' : 'translate-x-1'
             }`}
           />
@@ -53,26 +54,22 @@ export function GradientPicker({
       {enabled && (
         <>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => onTypeChange('linear')}
-              className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
-                type === 'linear'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-              }`}
+              variant={type === 'linear' ? 'default' : 'outline'}
+              className="flex-1"
+              size="sm"
             >
               Linear
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => onTypeChange('radial')}
-              className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
-                type === 'radial'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-              }`}
+              variant={type === 'radial' ? 'default' : 'outline'}
+              className="flex-1"
+              size="sm"
             >
               Radial
-            </button>
+            </Button>
           </div>
 
           <ColorPicker
@@ -88,25 +85,21 @@ export function GradientPicker({
           />
 
           {type === 'linear' && (
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Rotation: {rotation}°
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="360"
-                step="15"
-                value={rotation}
-                onChange={(e) => onRotationChange(Number(e.target.value))}
-                className="w-full"
+            <div className="space-y-2">
+              <Label>Rotation: {rotation}°</Label>
+              <Slider
+                value={[rotation]}
+                onValueChange={([value]) => onRotationChange(value)}
+                min={0}
+                max={360}
+                step={15}
               />
             </div>
           )}
 
           {/* Gradient Preview */}
           <div
-            className="h-12 rounded border border-gray-300 dark:border-gray-600"
+            className="h-12 rounded-md border"
             style={{
               background:
                 type === 'linear'
@@ -116,6 +109,6 @@ export function GradientPicker({
           />
         </>
       )}
-    </div>
+    </Card>
   );
 }

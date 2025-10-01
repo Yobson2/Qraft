@@ -44,7 +44,7 @@ export function LogoWithText({ className = '', logoSize = 40 }: LogoWithTextProp
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <Logo size={logoSize} />
-      <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-black bg-clip-text text-transparent">
         Qraft
       </span>
     </div>

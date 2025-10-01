@@ -8,6 +8,9 @@ export interface QRStyleOptions {
   width: number;
   height: number;
   margin: number;
+  qrOptions?: {
+    errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
+  };
   dotsOptions: {
     color: string;
     type: 'square' | 'dots' | 'rounded' | 'extra-rounded' | 'classy' | 'classy-rounded';
@@ -49,12 +52,18 @@ export function AdvancedQRPreview({ options }: AdvancedQRPreviewProps) {
   useEffect(() => {
     if (!ref.current || !isMounted) return;
 
-    // Prepare QR code configuration
-    const { imageOptions, ...restOptions } = options;
-    const config = {
+    // Prepare QR code configuration - exclude image and imageOptions from spreading
+    const { image, imageOptions, ...restOptions } = options;
+
+    const config: any = {
       ...restOptions,
-      ...(options.image && imageOptions ? { imageOptions } : {}),
     };
+
+    // Only add image and imageOptions if image exists
+    if (image && imageOptions) {
+      config.image = image;
+      config.imageOptions = imageOptions;
+    }
 
     // Create QR code instance
     if (!qrCodeRef.current) {

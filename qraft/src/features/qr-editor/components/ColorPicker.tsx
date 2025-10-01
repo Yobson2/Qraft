@@ -1,6 +1,8 @@
 'use client';
 
 import { ChangeEvent } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface ColorPickerProps {
   label: string;
@@ -14,22 +16,20 @@ export function ColorPicker({ label, value, onChange }: ColorPickerProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
-      </label>
+    <div className="space-y-2">
+      <Label>{label}</Label>
       <div className="flex items-center gap-3">
         <input
           type="color"
           value={value}
           onChange={handleChange}
-          className="w-12 h-12 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+          className="w-12 h-12 rounded-md border border-input cursor-pointer"
         />
-        <input
+        <Input
           type="text"
           value={value}
           onChange={handleChange}
-          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded text-sm font-mono bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          className="flex-1 font-mono"
           placeholder="#000000"
         />
       </div>

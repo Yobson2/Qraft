@@ -25,6 +25,7 @@ interface AdvancedQREditorState {
   logoImage?: string;
   logoSize: number;
   logoMargin: number;
+  errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
 }
 
 const DEFAULT_STATE: AdvancedQREditorState = {
@@ -52,6 +53,7 @@ const DEFAULT_STATE: AdvancedQREditorState = {
   cornersDotType: 'dot',
   logoSize: 0.3,
   logoMargin: 5,
+  errorCorrectionLevel: 'M',
 };
 
 export function useAdvancedQREditor(initialState?: Partial<AdvancedQREditorState>) {
@@ -118,6 +120,10 @@ export function useAdvancedQREditor(initialState?: Partial<AdvancedQREditorState
     setState((prev) => ({ ...prev, logoMargin }));
   }, []);
 
+  const setErrorCorrectionLevel = useCallback((errorCorrectionLevel: AdvancedQREditorState['errorCorrectionLevel']) => {
+    setState((prev) => ({ ...prev, errorCorrectionLevel }));
+  }, []);
+
   const qrOptions = useMemo((): QRStyleOptions => {
     const { foregroundGradient, backgroundGradient } = state;
 
@@ -126,6 +132,9 @@ export function useAdvancedQREditor(initialState?: Partial<AdvancedQREditorState
       width: state.size,
       height: state.size,
       margin: state.margin,
+      qrOptions: {
+        errorCorrectionLevel: state.errorCorrectionLevel,
+      },
       dotsOptions: {
         color: foregroundGradient.enabled
           ? ''
@@ -200,6 +209,7 @@ export function useAdvancedQREditor(initialState?: Partial<AdvancedQREditorState
     setLogoImage,
     setLogoSize,
     setLogoMargin,
+    setErrorCorrectionLevel,
     qrOptions,
     reset,
   };
