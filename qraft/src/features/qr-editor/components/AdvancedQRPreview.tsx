@@ -55,7 +55,8 @@ export function AdvancedQRPreview({ options }: AdvancedQRPreviewProps) {
     // Prepare QR code configuration - exclude image and imageOptions from spreading
     const { image, imageOptions, ...restOptions } = options;
 
-    const config: any = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const config: Record<string, any> = {
       ...restOptions,
     };
 

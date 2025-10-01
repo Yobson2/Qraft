@@ -31,7 +31,11 @@ export async function GET(
     const result = await exportQRCode.execute({ id, format, dpi });
 
     // Return the file
-    return new NextResponse(result.data, {
+    const responseBody = Buffer.isBuffer(result.data)
+      ? new Uint8Array(result.data)
+      : result.data;
+
+    return new NextResponse(responseBody, {
       headers: {
         'Content-Type': result.mimeType,
         'Content-Disposition': `attachment; filename="${result.filename}"`,

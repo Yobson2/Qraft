@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { LogoWithText } from '@/components/Logo';
 import { AdvancedQRPreview } from '@/features/qr-editor/components/AdvancedQRPreview';
 import { ColorPicker } from '@/features/qr-editor/components/ColorPicker';
@@ -17,10 +17,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { ChevronDown, Download, Palette, Grid3x3, Image as ImageIcon, Settings } from 'lucide-react';
+import { ChevronDown, Palette, Grid3x3, Image as ImageIcon, Settings } from 'lucide-react';
 
 export default function Home() {
-  const qrCodeRef = useRef<QRCodeStyling | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>('styles');
 
   const {
@@ -28,7 +27,7 @@ export default function Home() {
     foregroundColor,
     backgroundColor,
     foregroundGradient,
-    backgroundGradient,
+    backgroundGradient: _backgroundGradient,
     size,
     margin,
     dotsType,
@@ -341,19 +340,19 @@ export default function Home() {
                     label="Dot Style"
                     value={dotsType}
                     options={dotsOptions}
-                    onChange={(value) => setDotsType(value as any)}
+                    onChange={(value) => setDotsType(value as typeof dotsType)}
                   />
                   <ShapeSelector
                     label="Corner Squares"
                     value={cornersSquareType}
                     options={cornersSquareOptions}
-                    onChange={(value) => setCornersSquareType(value as any)}
+                    onChange={(value) => setCornersSquareType(value as typeof cornersSquareType)}
                   />
                   <ShapeSelector
                     label="Corner Dots"
                     value={cornersDotType}
                     options={cornersDotOptions}
-                    onChange={(value) => setCornersDotType(value as any)}
+                    onChange={(value) => setCornersDotType(value as typeof cornersDotType)}
                   />
                 </CardContent>
               )}
@@ -430,7 +429,7 @@ export default function Home() {
                     <Label className="text-sm">Error Correction</Label>
                     <Select
                       value={errorCorrectionLevel}
-                      onValueChange={(value) => setErrorCorrectionLevel(value as any)}
+                      onValueChange={(value) => setErrorCorrectionLevel(value as typeof errorCorrectionLevel)}
                     >
                       <SelectTrigger className="bg-gray-50 border-gray-300">
                         <SelectValue />
