@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx next lint)",
+      "Bash(npm audit:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx next lint:*)",
+      "Bash(npm run lint:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add CI/CD pipelines, fix hydration, and improve app structure\n\nSet up GitHub Actions workflows for Vercel deployment \\(CI checks on PRs,\nproduction deploy on push to main, preview deploys on PRs\\). Fix React\nhydration mismatch by using client-only rendering and dynamic imports for\nqr-code-styling. Add error/not-found pages, sitemap, robots.txt, and\nrepository infrastructure. Move DEPLOYMENT.md to docs/.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []
