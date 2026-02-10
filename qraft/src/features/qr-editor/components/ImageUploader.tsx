@@ -8,9 +8,12 @@ interface ImageUploaderProps {
   currentImage?: string;
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export function ImageUploader({ onImageUpload, onImageRemove, currentImage }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -20,8 +23,15 @@ export function ImageUploader({ onImageUpload, onImageRemove, currentImage }: Im
   };
 
   const processFile = (file: File) => {
+    setError(null);
+
     if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
+      setError('Please upload an image file (PNG, JPG, SVG).');
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setError('Image must be under 5MB.');
       return;
     }
 
@@ -106,6 +116,10 @@ export function ImageUploader({ onImageUpload, onImageRemove, currentImage }: Im
             Drag & drop an image or click to browse
           </p>
         </div>
+      )}
+
+      {error && (
+        <p className="text-xs text-red-500">{error}</p>
       )}
 
       <input

@@ -2,16 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FetchQRCode } from '@/domain/use-cases/FetchQRCode';
 import { UpdateQRCode } from '@/domain/use-cases/UpdateQRCode';
 import { DeleteQRCode } from '@/domain/use-cases/DeleteQRCode';
-import { InMemoryQRCodeRepository } from '@/infrastructure/repositories/InMemoryQRCodeRepository';
-import { InMemoryAssetRepository } from '@/infrastructure/repositories/InMemoryAssetRepository';
+import { qrCodeRepository, assetRepository } from '@/infrastructure/repositories';
 import { QRCodeStyle } from '@/domain/entities/QRCodeStyle';
 import { Color } from '@/domain/value-objects/Color';
 import { Size } from '@/domain/value-objects/Size';
 import { ErrorCorrectionLevel, ErrorCorrectionLevelType } from '@/domain/value-objects/ErrorCorrectionLevel';
-
-// Singleton repositories for demo purposes
-const qrCodeRepository = new InMemoryQRCodeRepository();
-const assetRepository = new InMemoryAssetRepository();
 
 export async function GET(
   request: NextRequest,

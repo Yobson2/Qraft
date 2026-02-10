@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GenerateQRCode } from '@/domain/use-cases/GenerateQRCode';
-import { InMemoryQRCodeRepository } from '@/infrastructure/repositories/InMemoryQRCodeRepository';
+import { qrCodeRepository } from '@/infrastructure/repositories';
 import { QRCodeStyle } from '@/domain/entities/QRCodeStyle';
 import { Color } from '@/domain/value-objects/Color';
 import { Size } from '@/domain/value-objects/Size';
 import { ErrorCorrectionLevel, ErrorCorrectionLevelType } from '@/domain/value-objects/ErrorCorrectionLevel';
-
-// Singleton repository for demo purposes
-const qrCodeRepository = new InMemoryQRCodeRepository();
 
 export async function POST(request: NextRequest) {
   try {

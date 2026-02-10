@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import gsap from 'gsap';
 import { LogoWithText } from '@/components/Logo';
-import { AdvancedQRPreview } from '@/features/qr-editor/components/AdvancedQRPreview';
 import { ColorPicker } from '@/features/qr-editor/components/ColorPicker';
 import { ShapeSelector } from '@/features/qr-editor/components/ShapeSelector';
 import { ImageUploader } from '@/features/qr-editor/components/ImageUploader';
@@ -11,7 +11,6 @@ import { GradientPicker } from '@/features/qr-editor/components/GradientPicker';
 import { PresetSelector } from '@/features/qr-editor/components/PresetSelector';
 import { useAdvancedQREditor } from '@/features/qr-editor/hooks/useAdvancedQREditor';
 import { QRPreset } from '@/features/qr-editor/presets/qr-presets';
-import QRCodeStyling from 'qr-code-styling';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,16 +20,27 @@ import { Slider } from '@/components/ui/slider';
 import { ChevronDown, Palette, Grid3x3, Image as ImageIcon, Settings } from 'lucide-react';
 import { useScrollAnimation, useStaggerAnimation } from '@/hooks/useScrollAnimation';
 
+const AdvancedQRPreview = dynamic(
+  () => import('@/features/qr-editor/components/AdvancedQRPreview').then(mod => ({ default: mod.AdvancedQRPreview })),
+  { ssr: false }
+);
+
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>('styles');
+  const [downloadFormat, setDownloadFormat] = useState<'png' | 'svg' | 'jpeg'>('svg');
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     payload,
     foregroundColor,
     backgroundColor,
     foregroundGradient,
-    backgroundGradient,
     size,
     margin,
     dotsType,
@@ -58,6 +68,10 @@ export default function Home() {
   } = useAdvancedQREditor({
     payload: 'https://example.com',
   });
+
+  const scrollToTool = () => {
+    toolSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Animation refs
   const trustBadgesRef = useStaggerAnimation<HTMLDivElement>({ animation: 'scaleIn', stagger: 0.1, delay: 0.2 });
@@ -115,52 +129,28 @@ export default function Home() {
 
   const handleDownload = async (format: 'png' | 'svg' | 'jpeg') => {
     if (!payload) return;
+    setDownloadError(null);
 
     try {
+      const { default: QRCodeStyling } = await import('qr-code-styling');
       const qrCode = new QRCodeStyling(qrOptions);
-
-      if (format === 'svg') {
-        const blob = await qrCode.getRawData('svg');
-        if (blob && blob instanceof Blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = 'qrcode.svg';
-          link.href = url;
-          link.click();
-          URL.revokeObjectURL(url);
-        }
-      } else {
-        const blob = await qrCode.getRawData(format);
-        if (blob && blob instanceof Blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = `qrcode.${format}`;
-          link.href = url;
-          link.click();
-          URL.revokeObjectURL(url);
-        }
+      const blob = await qrCode.getRawData(format);
+      if (blob && blob instanceof Blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `qrcode.${format}`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
       }
     } catch (error) {
       console.error('Download error:', error);
-      alert('Failed to download QR code');
+      setDownloadError('Failed to download QR code. Please try again.');
     }
   };
 
   const toggleSection = (section: string) => {
-    const isExpanding = expandedSection !== section;
-    setExpandedSection(isExpanding ? section : null);
-
-    // Animate chevron rotation
-    setTimeout(() => {
-      const chevron = document.querySelector(`[data-section="${section}"] svg`);
-      if (chevron) {
-        gsap.to(chevron, {
-          rotation: isExpanding ? 180 : 0,
-          duration: 0.3,
-          ease: 'power2.out',
-        });
-      }
-    }, 0);
+    setExpandedSection(expandedSection !== section ? section : null);
   };
 
   const dotsOptions = [
@@ -190,6 +180,10 @@ export default function Home() {
     { value: 'H', label: 'High (30%)' },
   ];
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Header */}
@@ -202,10 +196,7 @@ export default function Home() {
               variant="default"
               size="sm"
               className="text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => {
-                const toolSection = document.querySelector('#qr-tool');
-                toolSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={scrollToTool}
             >
               Try It Free
             </Button>
@@ -256,10 +247,7 @@ export default function Home() {
             <Button
               size="lg"
               className="bg-linear-to-r from-blue-600 to-black text-white hover:from-blue-700 hover:to-gray-900 text-base sm:text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
-              onClick={() => {
-                const toolSection = document.querySelector('#qr-tool');
-                toolSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={scrollToTool}
             >
               Start Creating Free →
             </Button>
@@ -321,14 +309,14 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => handleDownload('svg')}
+                    onClick={() => handleDownload(downloadFormat)}
                     className="flex-1 h-9 sm:h-10 bg-linear-to-r from-blue-600 to-black text-white hover:from-blue-700 hover:to-purple-700 text-xs sm:text-sm"
                   >
                     <span className="hidden sm:inline">Download QR Code</span>
                     <span className="sm:hidden">Download</span>
                   </Button>
 
-                  <Select defaultValue="svg">
+                  <Select value={downloadFormat} onValueChange={(v) => setDownloadFormat(v as 'png' | 'svg' | 'jpeg')}>
                     <SelectTrigger className="w-16 sm:w-20 h-9 sm:h-10 bg-gray-50 border border-gray-300 text-xs sm:text-sm">
                       <SelectValue />
                     </SelectTrigger>
@@ -339,6 +327,9 @@ export default function Home() {
                     </SelectContent>
                   </Select>
                 </div>
+                {downloadError && (
+                  <p className="text-xs text-center text-red-500">{downloadError}</p>
+                )}
                 <p className="text-xs text-center text-gray-500">
                   ✓ No watermarks • Free forever • HD quality
                 </p>

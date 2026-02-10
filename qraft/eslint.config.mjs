@@ -1,21 +1,28 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextConfig from "eslint-config-next";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextConfig.map((config) => {
+    if (config.plugins?.["@typescript-eslint"]) {
+      return {
+        ...config,
+        rules: {
+          ...config.rules,
+          "@typescript-eslint/no-unused-vars": "warn",
+        },
+      };
+    }
+    if (config.plugins?.["@next/next"]) {
+      return {
+        ...config,
+        rules: {
+          ...config.rules,
+          "@next/next/no-img-element": "warn",
+        },
+      };
+    }
+    return config;
+  }),
   {
-    rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@next/next/no-img-element": "warn",
-    },
     ignores: [
       "node_modules/**",
       ".next/**",

@@ -8,7 +8,7 @@ interface PresetSelectorProps {
 }
 
 function PresetButton({ preset, onSelect }: { preset: QRPreset; onSelect: () => void }) {
-  const ref = useHoverAnimation({ scale: 1.05, y: -3, duration: 0.2 });
+  const ref = useHoverAnimation<HTMLButtonElement>({ scale: 1.05, y: -3, duration: 0.2 });
 
   return (
     <button

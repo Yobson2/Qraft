@@ -34,20 +34,21 @@ interface UseScrollAnimationOptions {
 export function useScrollAnimation<T extends HTMLElement>(
   options: UseScrollAnimationOptions = {}
 ) {
+  const {
+    animation = 'fadeInUp',
+    delay = 0,
+    duration,
+    start = 'top 85%',
+    end,
+    scrub = false,
+    once = true,
+    disabled = false,
+  } = options;
+
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    if (!ref.current || options.disabled) return;
-
-    const {
-      animation = 'fadeInUp',
-      delay = 0,
-      duration,
-      start = 'top 85%',
-      end,
-      scrub = false,
-      once = true,
-    } = options;
+    if (!ref.current || disabled) return;
 
     const preset = animationPresets[animation];
     const animationConfig = {
@@ -70,7 +71,7 @@ export function useScrollAnimation<T extends HTMLElement>(
     });
 
     return () => ctx.revert();
-  }, [options.animation, options.delay, options.duration, options.disabled, options.start, options.end, options.scrub, options.once]);
+  }, [animation, delay, duration, disabled, start, end, scrub, once]);
 
   return ref;
 }
@@ -83,19 +84,20 @@ interface UseStaggerAnimationOptions extends UseScrollAnimationOptions {
 export function useStaggerAnimation<T extends HTMLElement>(
   options: UseStaggerAnimationOptions = {}
 ) {
+  const {
+    animation = 'fadeInUp',
+    delay = 0,
+    duration,
+    stagger = 0.1,
+    start = 'top 85%',
+    once = true,
+    disabled = false,
+  } = options;
+
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    if (!ref.current || options.disabled) return;
-
-    const {
-      animation = 'fadeInUp',
-      delay = 0,
-      duration,
-      stagger = 0.1,
-      start = 'top 85%',
-      once = true,
-    } = options;
+    if (!ref.current || disabled) return;
 
     const preset = animationPresets[animation];
     const children = ref.current.children;
@@ -117,7 +119,7 @@ export function useStaggerAnimation<T extends HTMLElement>(
     });
 
     return () => ctx.revert();
-  }, [options.animation, options.delay, options.stagger, options.disabled, options.duration, options.start, options.once]);
+  }, [animation, delay, stagger, disabled, duration, start, once]);
 
   return ref;
 }
@@ -130,12 +132,13 @@ interface UseParallaxOptions {
 }
 
 export function useParallax<T extends HTMLElement>(options: UseParallaxOptions = {}) {
+  const { speed = 1, direction = 'up', disabled = false } = options;
+
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    if (!ref.current || options.disabled) return;
+    if (!ref.current || disabled) return;
 
-    const { speed = 1, direction = 'up' } = options;
     const yMovement = direction === 'up' ? -100 * speed : 100 * speed;
 
     const ctx = gsap.context(() => {
@@ -152,7 +155,7 @@ export function useParallax<T extends HTMLElement>(options: UseParallaxOptions =
     });
 
     return () => ctx.revert();
-  }, [options.speed, options.direction, options.disabled]);
+  }, [speed, direction, disabled]);
 
   return ref;
 }
@@ -168,12 +171,13 @@ interface UseHoverAnimationOptions {
 export function useHoverAnimation<T extends HTMLElement>(
   options: UseHoverAnimationOptions = {}
 ) {
+  const { scale = 1.05, y = 0, duration = 0.3, disabled = false } = options;
+
   const ref = useRef<T>(null);
 
   useEffect(() => {
-    if (!ref.current || options.disabled) return;
+    if (!ref.current || disabled) return;
 
-    const { scale = 1.05, y = 0, duration = 0.3 } = options;
     const element = ref.current;
 
     const handleMouseEnter = () => {
@@ -201,7 +205,7 @@ export function useHoverAnimation<T extends HTMLElement>(
       element.removeEventListener('mouseenter', handleMouseEnter);
       element.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [options.scale, options.y, options.duration, options.disabled]);
+  }, [scale, y, duration, disabled]);
 
   return ref;
 }
@@ -211,12 +215,13 @@ export function useCounterAnimation(
   endValue: number,
   options: { duration?: number; start?: number; disabled?: boolean } = {}
 ) {
+  const { duration = 2, start = 0, disabled = false } = options;
+
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!ref.current || options.disabled) return;
+    if (!ref.current || disabled) return;
 
-    const { duration = 2, start = 0 } = options;
     const element = ref.current;
     const obj = { value: start };
 
@@ -239,7 +244,7 @@ export function useCounterAnimation(
     });
 
     return () => ctx.revert();
-  }, [endValue, options.duration, options.start, options.disabled]);
+  }, [endValue, duration, start, disabled]);
 
   return ref;
 }

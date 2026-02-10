@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ExportQRCode, ExportFormat } from '@/domain/use-cases/ExportQRCode';
-import { InMemoryQRCodeRepository } from '@/infrastructure/repositories/InMemoryQRCodeRepository';
+import { qrCodeRepository } from '@/infrastructure/repositories';
 import { QRCodeLibGenerator } from '@/infrastructure/qr-generators/QRCodeLibGenerator';
 import { QRCodeExporterImpl } from '@/infrastructure/qr-generators/QRCodeGenerator';
 
-// Singleton repository for demo purposes
-const qrCodeRepository = new InMemoryQRCodeRepository();
 const qrGenerator = new QRCodeLibGenerator();
 const qrExporter = new QRCodeExporterImpl(qrGenerator);
 

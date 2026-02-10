@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
 
 export interface QRStyleOptions {
@@ -40,55 +40,34 @@ interface AdvancedQRPreviewProps {
 }
 
 export function AdvancedQRPreview({ options }: AdvancedQRPreviewProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const qrCodeRef = useRef<QRCodeStyling | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Ensure client-side only rendering
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
-    if (!ref.current || !isMounted) return;
+    if (!containerRef.current) return;
 
-    // Prepare QR code configuration - exclude image and imageOptions from spreading
     const { image, imageOptions, ...restOptions } = options;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const config: Record<string, any> = {
+    const config: Record<string, unknown> = {
       ...restOptions,
     };
 
-    // Only add image and imageOptions if image exists
     if (image && imageOptions) {
       config.image = image;
       config.imageOptions = imageOptions;
     }
 
-    // Create QR code instance
     if (!qrCodeRef.current) {
       qrCodeRef.current = new QRCodeStyling(config);
-      qrCodeRef.current.append(ref.current);
+      qrCodeRef.current.append(containerRef.current);
     } else {
-      // Update existing QR code
       qrCodeRef.current.update(config);
     }
-  }, [options, isMounted]);
-
-  if (!isMounted) {
-    return (
-      <div className="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-900 rounded-lg">
-        <div className="w-64 h-64 flex items-center justify-center text-gray-400">
-          Loading preview...
-        </div>
-      </div>
-    );
-  }
+  }, [options]);
 
   return (
     <div className="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-900 rounded-lg">
-      <div ref={ref} className="qr-code-container" />
+      <div ref={containerRef} className="qr-code-container" />
     </div>
   );
 }
