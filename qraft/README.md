@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Qraft - QR Code Generator
+
+Create beautiful, fully customizable QR codes in seconds — 100% free, no signup required.
+
+**Live Demo:** [qraft-self.vercel.app](https://qraft-self.vercel.app/)
+
+## Features
+
+- **Custom Colors & Gradients** — Solid colors, linear and radial gradients with rotation control
+- **QR Code Patterns** — Multiple dot styles (square, dots, rounded, classy) and corner styles
+- **Logo Embedding** — Upload a logo with adjustable size, margin, and background masking
+- **Preset Templates** — Quick-start with pre-configured style presets
+- **Error Correction Levels** — L (7%), M (15%), Q (25%), H (30%)
+- **Multiple Export Formats** — Download as PNG, SVG, or JPEG
+- **Adjustable Size** — 128px to 1024px with margin control
+- **Real-Time Preview** — Instant visual feedback as you customize
+- **No Watermarks** — HD quality output, unlimited downloads
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | [Next.js](https://nextjs.org) 16 (App Router, Turbopack) |
+| UI | [React](https://react.dev) 19, [TypeScript](https://www.typescriptlang.org) |
+| Styling | [Tailwind CSS](https://tailwindcss.com) 4, [Radix UI](https://www.radix-ui.com) |
+| QR Generation | [qr-code-styling](https://github.com/nicebucla/qr-code-styling), [qrcode](https://github.com/soldair/node-qrcode) |
+| Animations | [GSAP](https://gsap.com) |
+| Deployment | [Vercel](https://vercel.com) |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Installation
+
+```bash
+git clone https://github.com/your-username/qraft.git
+cd qraft
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### Linting
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                  # Next.js App Router (pages, layouts, API routes)
+│   └── api/qrcodes/      # REST API endpoints
+├── domain/               # Entities, value objects, repository interfaces, use cases
+├── infrastructure/       # Repository implementations, QR generator adapters
+├── features/
+│   └── qr-editor/        # Editor components, hooks, and presets
+├── components/ui/        # Reusable UI primitives (Button, Card, Input, etc.)
+├── hooks/                # Shared custom hooks
+├── lib/                  # Utilities and animation configs
+└── styles/               # Global styles
+```
 
-## Deploy on Vercel
+The project follows **Clean Architecture** with separated domain, infrastructure, and presentation layers.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/qrcodes` | Create a new QR code |
+| `GET` | `/api/qrcodes/:id` | Fetch a QR code by ID |
+| `PUT` | `/api/qrcodes/:id` | Update QR code styling |
+| `DELETE` | `/api/qrcodes/:id` | Delete a QR code |
+| `GET` | `/api/qrcodes/:id/export?format=svg\|png\|pdf` | Export in a specific format |
+
+## License
+
+This project is open source.
